@@ -1,0 +1,9 @@
+version: "2"
+sql:
+  - engine: "sqlite"
+    queries: "query.sql"
+    schema: "migrations/"
+    gen:
+      go:
+        package: "racer_http"
+        out: "racer-http-db"

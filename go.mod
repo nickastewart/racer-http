@@ -1,10 +1,10 @@
-module racer-http
+module racer_http
 
 go 1.24.2
 
 require (
 	github.com/gin-gonic/gin v1.11.0
-	github.com/nickastewart/racer-parser v0.0.0-20250921090417-265ae7d1aec9
+	github.com/nickastewart/racer-parser v0.0.0-20250921135159-0d462976f0d9
 )
 
 require (

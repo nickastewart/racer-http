@@ -40,8 +40,8 @@ github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421 h1:ZqeYNhU3OH
 github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421/go.mod h1:6dJC0mAP4ikYIbvyc7fijjWJddQyLn8Ig3JB5CqoB9Q=
 github.com/modern-go/reflect2 v1.0.2 h1:xBagoLtFs94CBntxluKeaWgTMpvLxC4ur3nMaC9Gz0M=
 github.com/modern-go/reflect2 v1.0.2/go.mod h1:yWuevngMOJpCy52FWWMvUC8ws7m/LJsjYzDa0/r8luk=
-github.com/nickastewart/racer-parser v0.0.0-20250921090417-265ae7d1aec9 h1:PttW0Q1qSic2UxdBH7xiN2z5zevQESNX0C8g9Bm0MHg=
-github.com/nickastewart/racer-parser v0.0.0-20250921090417-265ae7d1aec9/go.mod h1:SnWOd33xlNIy914tfE6kEEwoYDnrbM1BeOGTCoYKLQA=
+github.com/nickastewart/racer-parser v0.0.0-20250921135159-0d462976f0d9 h1:+rA6Tr7IpOKs9zRy8f8GtAx/tBO1eR/RbYX1GzI4A0I=
+github.com/nickastewart/racer-parser v0.0.0-20250921135159-0d462976f0d9/go.mod h1:SnWOd33xlNIy914tfE6kEEwoYDnrbM1BeOGTCoYKLQA=
 github.com/pelletier/go-toml/v2 v2.2.4 h1:mye9XuhQ6gvn5h28+VilKrrPoQVanw5PMw/TB0t5Ec4=
 github.com/pelletier/go-toml/v2 v2.2.4/go.mod h1:2gIqNv+qfxSVS7cM2xJQKtLSTLUE9V8t9Stt+h56mCY=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
