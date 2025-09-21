@@ -7,9 +7,10 @@ import (
 
 func main() {
 	router := gin.Default()
-	router.GET("/parse", func(c *gin.Context){
+	router.GET("/parse", func(c *gin.Context) {
+		filePath := c.Query("file")
 		c.JSON(200, gin.H{
-			"message": racer.Parse("/Users/nickstewart/results/2024-07-16-Milton-Keynes.eml"),
+			"message": racer.Parse(filePath),
 		})
 	})
 
