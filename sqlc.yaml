@@ -5,5 +5,5 @@ sql:
     schema: "migrations/"
     gen:
       go:
-        package: "racer_http"
-        out: "racer-http-db"
+        package: "entities"
+        out: "sqlite/entities"

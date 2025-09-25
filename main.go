@@ -1,14 +1,15 @@
 package main
 
 import (
-	"context"
 	"database/sql"
 	_ "embed"
 	"github.com/gin-gonic/gin"
 	racer "github.com/nickastewart/racer-parser"
 	"log"
 	_ "modernc.org/sqlite"
-	"racer_http/racer-http-db"
+	"racer_http/sqlite/entities"
+	"racer_http/repository"
+	"context"
 )
 
 func main() {
@@ -21,9 +22,8 @@ func main() {
 	}
 	defer db.Close()
 
-	queries := racer_http.New(db)
-
-	user, err := queries.GetUser(ctx, int64(1))
+	queries := entities.New(db)
+	var userRepository repository.UserRepository = repository.NewUserRepository(queries)
 
 	if err != nil {
 		log.Panic(err)
@@ -40,10 +40,9 @@ func main() {
 	router.GET("/user", func(c *gin.Context) {
 
 		c.JSON(200, gin.H{
-			"User": user,
+			"User": userRepository.GetUserById(ctx, int64(1)),
 		})
 	})
 
 	router.Run()
 }
-
