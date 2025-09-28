@@ -7,14 +7,12 @@ import (
 	racer "github.com/nickastewart/racer-parser"
 	"log"
 	_ "modernc.org/sqlite"
-	"racer_http/sqlite/entities"
+	"racer_http/controllers"
 	"racer_http/repository"
-	"context"
+	"racer_http/sqlite/entities"
 )
 
 func main() {
-
-	ctx := context.Background()
 
 	db, err := sql.Open("sqlite", "/Users/nickstewart/sqlite/racer.db")
 	if err != nil {
@@ -24,7 +22,7 @@ func main() {
 
 	queries := entities.New(db)
 	var userRepository repository.UserRepository = repository.NewUserRepository(queries)
-
+	authController := controllers.NewAuthController(userRepository)
 	if err != nil {
 		log.Panic(err)
 	}
@@ -37,12 +35,9 @@ func main() {
 		})
 	})
 
-	router.GET("/user", func(c *gin.Context) {
-
-		c.JSON(200, gin.H{
-			"User": userRepository.GetUserById(ctx, int64(1)),
-		})
-	})
+	router.POST("auth/user", authController.CreateUser)
+	router.GET("auth/user", authController.Login)
+	router.GET("user", authController.CheckAuth, authController.GetUser)
 
 	router.Run()
 }
