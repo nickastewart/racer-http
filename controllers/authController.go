@@ -19,6 +19,7 @@ type AuthController struct {
 	UserRepository repository.UserRepository
 }
 
+// TODO: Change to inject a service instead of a repo 
 func NewAuthController(userRepository repository.UserRepository) *AuthController {
 	return &AuthController{
 		UserRepository: userRepository,
@@ -158,6 +159,7 @@ func (controller *AuthController) CheckAuth(c *gin.Context) {
 	c.Next()
 }
 
+// TODO: delete func when profile functionality is added as this is a test func 
 func (controller *AuthController) GetUser(c *gin.Context) {
 	user, _ := c.Get("currentUser")
 	c.JSON(200, gin.H{"user": user})

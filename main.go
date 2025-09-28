@@ -3,13 +3,14 @@ package main
 import (
 	"database/sql"
 	_ "embed"
-	"github.com/gin-gonic/gin"
-	racer "github.com/nickastewart/racer-parser"
 	"log"
-	_ "modernc.org/sqlite"
 	"racer_http/controllers"
 	"racer_http/repository"
 	"racer_http/sqlite/entities"
+
+	"github.com/gin-gonic/gin"
+	racer "github.com/nickastewart/racer-parser"
+	_ "modernc.org/sqlite"
 )
 
 func main() {
@@ -23,6 +24,7 @@ func main() {
 	queries := entities.New(db)
 	var userRepository repository.UserRepository = repository.NewUserRepository(queries)
 	authController := controllers.NewAuthController(userRepository)
+
 	if err != nil {
 		log.Panic(err)
 	}
@@ -37,7 +39,14 @@ func main() {
 
 	router.POST("auth/user", authController.CreateUser)
 	router.GET("auth/user", authController.Login)
+
+	// TODO: delete this when a get profile functionlity is implemented
 	router.GET("user", authController.CheckAuth, authController.GetUser)
 
+	// TODO: Add file upload endpoint, need to check auth
+	// TODO: Add get events endpoint, need to check auth
+	// TODO: Add add friend endpoint, need to check auth 
+	// TODO: Add get events endpoint that includes friends, need to check auth
+	// TODO: Add endpoint to remove friends
 	router.Run()
 }
