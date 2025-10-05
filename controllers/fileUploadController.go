@@ -2,9 +2,11 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"racer_http/repository"
 	"racer_http/sqlite/entities"
+	
+	racer "github.com/nickastewart/racer-parser"
+	"github.com/gin-gonic/gin"
 )
 
 type FileUploadController struct {
@@ -22,7 +24,11 @@ func (controller *FileUploadController) UploadFile(c *gin.Context) {
 
 	user, _ := u.(entities.GetUserByIdRow)
 	form, _ := c.MultipartForm()
-	file, _ := form.File["file"]
+	multipartFile, _ := form.File["file"]
 
-	fmt.Printf("User %s, uploaded file %s", user.FirstName, file[0].Filename)
+	fmt.Printf("User %s, uploaded file %s \n", user.FirstName, multipartFile[0].Filename)
+
+	file, _ := multipartFile[0].Open()
+	
+	fmt.Print(racer.ParseFile(file))
 }

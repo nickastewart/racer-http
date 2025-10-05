@@ -9,7 +9,6 @@ import (
 	"racer_http/sqlite/entities"
 
 	"github.com/gin-gonic/gin"
-	racer "github.com/nickastewart/racer-parser"
 	_ "modernc.org/sqlite"
 )
 
@@ -31,20 +30,13 @@ func main() {
 	}
 	router := gin.Default()
 
-	router.GET("/parse", func(c *gin.Context) {
-		filePath := c.Query("file")
-		c.JSON(200, gin.H{
-			"message": racer.Parse(filePath),
-		})
-	})
-
 	router.POST("auth/user", authController.CreateUser)
 	router.GET("auth/user", authController.Login)
 
 	// TODO: delete this when a get profile functionlity is implemented
 	router.GET("user", authController.CheckAuth, authController.GetUser)
 
-	// TODO: Add file upload endpoint, need to check auth
+	// TODO: Add file upload endpoint
 	router.POST("upload", authController.CheckAuth, fileUploadController.UploadFile)
 	// TODO: Add get events endpoint, need to check auth
 	// TODO: Add add friend endpoint, need to check auth
