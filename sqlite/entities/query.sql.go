@@ -10,8 +10,50 @@ import (
 	"database/sql"
 )
 
+const createEvent = `-- name: CreateEvent :one
+INSERT INTO event (location_id, type, date, total_drivers) VALUES (?, ?, ?, ?)
+    RETURNING id, location_id, type, date, total_drivers
+`
+
+type CreateEventParams struct {
+	LocationID   int64
+	Type         string
+	Date         string
+	TotalDrivers int64
+}
+
+func (q *Queries) CreateEvent(ctx context.Context, arg CreateEventParams) (Event, error) {
+	row := q.db.QueryRowContext(ctx, createEvent,
+		arg.LocationID,
+		arg.Type,
+		arg.Date,
+		arg.TotalDrivers,
+	)
+	var i Event
+	err := row.Scan(
+		&i.ID,
+		&i.LocationID,
+		&i.Type,
+		&i.Date,
+		&i.TotalDrivers,
+	)
+	return i, err
+}
+
+const createLocation = `-- name: CreateLocation :one
+INSERT INTO location (name) VALUES (?)
+    RETURNING id, name
+`
+
+func (q *Queries) CreateLocation(ctx context.Context, name string) (Location, error) {
+	row := q.db.QueryRowContext(ctx, createLocation, name)
+	var i Location
+	err := row.Scan(&i.ID, &i.Name)
+	return i, err
+}
+
 const createUser = `-- name: CreateUser :one
-INSERT INTO user (first_name, last_name, email, password) values (?, ?, ?, ?)
+INSERT INTO user (first_name, last_name, email, password) VALUES (?, ?, ?, ?)
     RETURNING first_name, last_name, email, created_at
 `
 
@@ -43,6 +85,40 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (CreateU
 		&i.Email,
 		&i.CreatedAt,
 	)
+	return i, err
+}
+
+const getEventByLocationAndTypeAndDate = `-- name: GetEventByLocationAndTypeAndDate :one
+SELECT id, location_id, type, date, total_drivers FROM event WHERE location_id = ? AND type = ? AND date = ?
+`
+
+type GetEventByLocationAndTypeAndDateParams struct {
+	LocationID int64
+	Type       string
+	Date       string
+}
+
+func (q *Queries) GetEventByLocationAndTypeAndDate(ctx context.Context, arg GetEventByLocationAndTypeAndDateParams) (Event, error) {
+	row := q.db.QueryRowContext(ctx, getEventByLocationAndTypeAndDate, arg.LocationID, arg.Type, arg.Date)
+	var i Event
+	err := row.Scan(
+		&i.ID,
+		&i.LocationID,
+		&i.Type,
+		&i.Date,
+		&i.TotalDrivers,
+	)
+	return i, err
+}
+
+const getLocationByName = `-- name: GetLocationByName :one
+SELECT id, name FROM location WHERE name = ?
+`
+
+func (q *Queries) GetLocationByName(ctx context.Context, name string) (Location, error) {
+	row := q.db.QueryRowContext(ctx, getLocationByName, name)
+	var i Location
+	err := row.Scan(&i.ID, &i.Name)
 	return i, err
 }
 

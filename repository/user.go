@@ -20,26 +20,38 @@ func (r *UserRepositorySqlite) GetUserById(ctx context.Context, id int64) (entit
 	user, err := r.queries.GetUserById(ctx, id)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 	return user, err
 }
 
 func (r *UserRepositorySqlite) CreateUser(ctx context.Context,
 	userParams entities.CreateUserParams) (entities.CreateUserRow, error) {
-
 	savedUser, err := r.queries.CreateUser(ctx, userParams)
+
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	return savedUser, err
 }
 
 func (r *UserRepositorySqlite) GetUserByEmail(ctx context.Context, email string) (entities.GetUserByEmailRow, error) {
- 	return r.queries.GetUserByEmail(ctx, email)
+	user, err := r.queries.GetUserByEmail(ctx, email)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	return user, err
 }
 
 func (r *UserRepositorySqlite) GetUserByEmailForLogin(ctx context.Context, email string) (entities.GetUserByEmailForLoginRow, error) {
- 	return r.queries.GetUserByEmailForLogin(ctx, email)
+	user, err := r.queries.GetUserByEmailForLogin(ctx, email)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	return user, err
 }

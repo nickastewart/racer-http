@@ -22,8 +22,11 @@ func main() {
 
 	queries := entities.New(db)
 	var userRepository repository.UserRepository = repository.NewUserRepository(queries)
+	var locationRepository repository.LocationRepository = repository.NewLocationRepository(queries)
+	var eventRepository repository.EventRepository = repository.NewEventRepository(queries)
+
 	authController := controllers.NewAuthController(userRepository)
-	fileUploadController := controllers.NewFileUploadController(userRepository)
+	fileUploadController := controllers.NewFileUploadController(userRepository, eventRepository, locationRepository)
 
 	if err != nil {
 		log.Panic(err)
