@@ -24,13 +24,15 @@ func main() {
 	var userRepository repository.UserRepository = repository.NewUserRepository(queries)
 	var locationRepository repository.LocationRepository = repository.NewLocationRepository(queries)
 	var eventRepository repository.EventRepository = repository.NewEventRepository(queries)
+	var eventResultRepository repository.EventResultRepository = repository.NewEventResultRepository(queries)
 
 	authController := controllers.NewAuthController(userRepository)
-	fileUploadController := controllers.NewFileUploadController(userRepository, eventRepository, locationRepository)
+	fileUploadController := controllers.NewFileUploadController(userRepository, eventRepository, locationRepository, eventResultRepository)
 
 	if err != nil {
 		log.Panic(err)
 	}
+
 	router := gin.Default()
 
 	router.POST("auth/user", authController.CreateUser)

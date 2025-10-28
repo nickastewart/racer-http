@@ -1,30 +1,36 @@
 package controllers
 
 import (
-	"fmt"
+	"database/sql"
+	"errors"
+	"log"
 	"racer_http/repository"
 	"racer_http/sqlite/entities"
 
 	"context"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	racer "github.com/nickastewart/racer-parser"
 	"github.com/nickastewart/racer-parser/model"
-	"net/http"
 )
 
 type FileUploadController struct {
-	UserRepository     repository.UserRepository
-	LocationRepository repository.LocationRepository
-	EventRepository    repository.EventRepository
+	UserRepository         repository.UserRepository
+	LocationRepository     repository.LocationRepository
+	EventRepository        repository.EventRepository
+	EventResultRespository repository.EventResultRepository
 }
 
 func NewFileUploadController(userRepository repository.UserRepository,
 	eventRepository repository.EventRepository,
-	locationRepository repository.LocationRepository) *FileUploadController {
+	locationRepository repository.LocationRepository,
+	eventResultRespository repository.EventResultRepository) *FileUploadController {
 	return &FileUploadController{
-		UserRepository:     userRepository,
-		EventRepository:    eventRepository,
-		LocationRepository: locationRepository,
+		UserRepository:         userRepository,
+		EventRepository:        eventRepository,
+		LocationRepository:     locationRepository,
+		EventResultRespository: eventResultRespository,
 	}
 }
 
@@ -47,9 +53,6 @@ func (controller *FileUploadController) UploadFile(c *gin.Context) {
 		return
 	}
 
-	// TODO: Delete temp logging
-	fmt.Printf("User %s, uploaded file %s \n", user.FirstName, multipartFile[0].Filename)
-
 	file, err := multipartFile[0].Open()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -57,38 +60,52 @@ func (controller *FileUploadController) UploadFile(c *gin.Context) {
 	}
 	defer file.Close()
 
-	event := racer.ParseFile(file)
-
-	// TODO: Save event to the DB
-
-	locationEntity, err := controller.processLocation(ctx, &event)
-
+	event, err := racer.ParseFile(file)
 	if err != nil {
+		log.Println("Failed to parse file")
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	eventEntity, err := controller.processEvent(ctx, &event, &locationEntity)
-	fmt.Println(eventEntity)
-	fmt.Println(locationEntity)
+	locationEntity, err := controller.processLocation(ctx, event)
 
+	if err != nil {
+		log.Println("Failed to process location " + err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	eventEntity, err := controller.processEvent(ctx, event, &locationEntity)
+	if err != nil {
+		log.Println("Failed to process event " + err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	driverTime := event.DriverTimes[event.DriverInfo.Position-1]
+	eventResultEntity, err := controller.processEventResult(ctx, user, &driverTime, &eventEntity)
+
+	if err != nil {
+		log.Println("Failed to process event result " + err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"result": eventResultEntity})
 }
 
 func (controller *FileUploadController) processLocation(ctx context.Context, event *model.Event) (entities.Location, error) {
 
 	location, err := controller.LocationRepository.GetLocationByName(ctx, event.Location)
 
-	if err != nil {
-		return location, err
-	}
-
-	if location.ID == 0 {
+	if location.ID == 0 || errors.Is(err, sql.ErrNoRows) {
 		createdLocation, err := controller.LocationRepository.CreateLocation(ctx, event.Location)
 		if err != nil {
 			return location, err
 		}
 		location = createdLocation
 	}
+
 	return location, err
 }
 
@@ -102,11 +119,7 @@ func (controller *FileUploadController) processEvent(ctx context.Context, event 
 
 	eventEntity, err := controller.EventRepository.GetEventByLocationAndTypeAndDate(ctx, getEventParams)
 
-	if err != nil {
-		return eventEntity, err
-	}
-
-	if eventEntity.ID == 0 {
+	if eventEntity.ID == 0 || errors.Is(err, sql.ErrNoRows) {
 		createEventParams := entities.CreateEventParams{
 			LocationID:   location.ID,
 			Type:         event.RaceType,
@@ -123,4 +136,34 @@ func (controller *FileUploadController) processEvent(ctx context.Context, event 
 	}
 
 	return eventEntity, err
+}
+
+func (controller *FileUploadController) processEventResult(ctx context.Context, user entities.GetUserByIdRow, driverResult *model.DriverTime, event *entities.Event) (entities.EventResult, error) {
+
+	getEventResultByEventIdAndUserIdParams := entities.GetEventResultByEventIdAndUserIdParams{
+		EventID: event.ID,
+		UserID:  user.ID,
+	}
+
+	eventResultEntity, err := controller.EventResultRespository.GetEventResultByEventIdAndUserId(ctx, getEventResultByEventIdAndUserIdParams)
+
+	if eventResultEntity.ID == 0 || errors.Is(err, sql.ErrNoRows) {
+		createEventResultParams := entities.CreateEventResultParams{
+			EventID:        event.ID,
+			UserID:         user.ID,
+			BestLapTime:    int64(driverResult.Best),
+			AverageLapTime: int64(driverResult.Avg),
+			Position:       int64(driverResult.Pos),
+			NumberOfLaps:   int64(driverResult.NoLaps),
+		}
+
+		savedEntity, err := controller.EventResultRespository.CreateEventResult(ctx, createEventResultParams)
+
+		if err != nil {
+			return eventResultEntity, err
+		}
+
+		eventResultEntity = savedEntity
+	}
+	return eventResultEntity, err
 }

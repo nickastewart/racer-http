@@ -52,6 +52,12 @@ github.com/ncruces/go-strftime v0.1.9 h1:bY0MQC28UADQmHmaF5dgpLmImcShSi2kHU9XLdh
 github.com/ncruces/go-strftime v0.1.9/go.mod h1:Fwc5htZGVVkseilnfgOVb9mKy6w1naJmn9CehxcKcls=
 github.com/nickastewart/racer-parser v0.0.0-20251005193107-c1acb04c4d23 h1:PLvhw8kb3Hm7bA+cl6kV/EKh47DUAdYD1GLx29hE6po=
 github.com/nickastewart/racer-parser v0.0.0-20251005193107-c1acb04c4d23/go.mod h1:SnWOd33xlNIy914tfE6kEEwoYDnrbM1BeOGTCoYKLQA=
+github.com/nickastewart/racer-parser v0.0.0-20251014210231-b19d326a60f3 h1:6mOlNe5nWVPScSR8MjO3CpArrmgurFut89ApTqqst9g=
+github.com/nickastewart/racer-parser v0.0.0-20251014210231-b19d326a60f3/go.mod h1:SnWOd33xlNIy914tfE6kEEwoYDnrbM1BeOGTCoYKLQA=
+github.com/nickastewart/racer-parser v0.0.0-20251028132634-515feca64afd h1:RdjVEYMQ22HsYIRWM6ZNVJYhOx4Z+6GXkaohmtMHZPw=
+github.com/nickastewart/racer-parser v0.0.0-20251028132634-515feca64afd/go.mod h1:SnWOd33xlNIy914tfE6kEEwoYDnrbM1BeOGTCoYKLQA=
+github.com/nickastewart/racer-parser v0.0.0-20251028134242-4ab7ea3ca69c h1:JcBl6j1NvpFy8GB+4MUPVhyjZcjR3pQ/yTa+O3OrjlA=
+github.com/nickastewart/racer-parser v0.0.0-20251028134242-4ab7ea3ca69c/go.mod h1:SnWOd33xlNIy914tfE6kEEwoYDnrbM1BeOGTCoYKLQA=
 github.com/pelletier/go-toml/v2 v2.2.4 h1:mye9XuhQ6gvn5h28+VilKrrPoQVanw5PMw/TB0t5Ec4=
 github.com/pelletier/go-toml/v2 v2.2.4/go.mod h1:2gIqNv+qfxSVS7cM2xJQKtLSTLUE9V8t9Stt+h56mCY=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=

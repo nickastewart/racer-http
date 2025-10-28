@@ -21,3 +21,8 @@ type EventRepository interface {
 	CreateEvent(ctx context.Context, arg entities.CreateEventParams) (entities.Event, error)
 	GetEventByLocationAndTypeAndDate(ctx context.Context, arg entities.GetEventByLocationAndTypeAndDateParams) (entities.Event, error)
 }
+
+type EventResultRepository interface {
+	CreateEventResult(ctx context.Context, arg entities.CreateEventResultParams) (entities.EventResult, error)
+	GetEventResultByEventIdAndUserId(ctx context.Context, arg entities.GetEventResultByEventIdAndUserIdParams) (entities.EventResult, error)
+}

@@ -40,6 +40,42 @@ func (q *Queries) CreateEvent(ctx context.Context, arg CreateEventParams) (Event
 	return i, err
 }
 
+const createEventResult = `-- name: CreateEventResult :one
+INSERT INTO event_result (event_id, user_id, best_lap_time, average_lap_time, position, number_of_laps) VALUES (?, ?, ?, ?, ?, ?)
+    RETURNING id, event_id, user_id, best_lap_time, average_lap_time, position, number_of_laps
+`
+
+type CreateEventResultParams struct {
+	EventID        int64
+	UserID         int64
+	BestLapTime    int64
+	AverageLapTime int64
+	Position       int64
+	NumberOfLaps   int64
+}
+
+func (q *Queries) CreateEventResult(ctx context.Context, arg CreateEventResultParams) (EventResult, error) {
+	row := q.db.QueryRowContext(ctx, createEventResult,
+		arg.EventID,
+		arg.UserID,
+		arg.BestLapTime,
+		arg.AverageLapTime,
+		arg.Position,
+		arg.NumberOfLaps,
+	)
+	var i EventResult
+	err := row.Scan(
+		&i.ID,
+		&i.EventID,
+		&i.UserID,
+		&i.BestLapTime,
+		&i.AverageLapTime,
+		&i.Position,
+		&i.NumberOfLaps,
+	)
+	return i, err
+}
+
 const createLocation = `-- name: CreateLocation :one
 INSERT INTO location (name) VALUES (?)
     RETURNING id, name
@@ -107,6 +143,30 @@ func (q *Queries) GetEventByLocationAndTypeAndDate(ctx context.Context, arg GetE
 		&i.Type,
 		&i.Date,
 		&i.TotalDrivers,
+	)
+	return i, err
+}
+
+const getEventResultByEventIdAndUserId = `-- name: GetEventResultByEventIdAndUserId :one
+SELECT id, event_id, user_id, best_lap_time, average_lap_time, position, number_of_laps FROM event_result WHERE event_id = ? and user_id = ?
+`
+
+type GetEventResultByEventIdAndUserIdParams struct {
+	EventID int64
+	UserID  int64
+}
+
+func (q *Queries) GetEventResultByEventIdAndUserId(ctx context.Context, arg GetEventResultByEventIdAndUserIdParams) (EventResult, error) {
+	row := q.db.QueryRowContext(ctx, getEventResultByEventIdAndUserId, arg.EventID, arg.UserID)
+	var i EventResult
+	err := row.Scan(
+		&i.ID,
+		&i.EventID,
+		&i.UserID,
+		&i.BestLapTime,
+		&i.AverageLapTime,
+		&i.Position,
+		&i.NumberOfLaps,
 	)
 	return i, err
 }

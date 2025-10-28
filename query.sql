@@ -24,3 +24,10 @@ SELECT * FROM event WHERE location_id = ? AND type = ? AND date = ?;
 -- name: CreateEvent :one
 INSERT INTO event (location_id, type, date, total_drivers) VALUES (?, ?, ?, ?)
     RETURNING *;
+
+-- name: CreateEventResult :one
+INSERT INTO event_result (event_id, user_id, best_lap_time, average_lap_time, position, number_of_laps) VALUES (?, ?, ?, ?, ?, ?)
+    RETURNING *;
+
+-- name: GetEventResultByEventIdAndUserId :one
+SELECT * FROM event_result WHERE event_id = ? and user_id = ?; 

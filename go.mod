@@ -5,7 +5,7 @@ go 1.24.2
 require (
 	github.com/gin-gonic/gin v1.11.0
 	github.com/golang-jwt/jwt/v4 v4.5.2
-	github.com/nickastewart/racer-parser v0.0.0-20251005193107-c1acb04c4d23
+	github.com/nickastewart/racer-parser v0.0.0-20251028134242-4ab7ea3ca69c
 	golang.org/x/crypto v0.42.0
 	modernc.org/sqlite v1.39.0
 )
