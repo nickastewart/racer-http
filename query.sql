@@ -31,3 +31,9 @@ INSERT INTO event_result (event_id, user_id, best_lap_time, average_lap_time, po
 
 -- name: GetEventResultByEventIdAndUserId :one
 SELECT * FROM event_result WHERE event_id = ? and user_id = ?; 
+
+-- name: GetEventsByUser :many
+SELECT sqlc.embed(event), sqlc.embed(location), sqlc.embed(event_result) FROM event
+    LEFT JOIN location on event.location_id = location.id
+    LEFT JOIN event_result on event.id = event_result.event_id
+    WHERE event_result.user_id = ?;

@@ -171,6 +171,57 @@ func (q *Queries) GetEventResultByEventIdAndUserId(ctx context.Context, arg GetE
 	return i, err
 }
 
+const getEventsByUser = `-- name: GetEventsByUser :many
+SELECT event.id, event.location_id, event.type, event.date, event.total_drivers, location.id, location.name, event_result.id, event_result.event_id, event_result.user_id, event_result.best_lap_time, event_result.average_lap_time, event_result.position, event_result.number_of_laps FROM event
+    LEFT JOIN location on event.location_id = location.id
+    LEFT JOIN event_result on event.id = event_result.event_id
+    WHERE event_result.user_id = ?
+`
+
+type GetEventsByUserRow struct {
+	Event       Event
+	Location    Location
+	EventResult EventResult
+}
+
+func (q *Queries) GetEventsByUser(ctx context.Context, userID int64) ([]GetEventsByUserRow, error) {
+	rows, err := q.db.QueryContext(ctx, getEventsByUser, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetEventsByUserRow
+	for rows.Next() {
+		var i GetEventsByUserRow
+		if err := rows.Scan(
+			&i.Event.ID,
+			&i.Event.LocationID,
+			&i.Event.Type,
+			&i.Event.Date,
+			&i.Event.TotalDrivers,
+			&i.Location.ID,
+			&i.Location.Name,
+			&i.EventResult.ID,
+			&i.EventResult.EventID,
+			&i.EventResult.UserID,
+			&i.EventResult.BestLapTime,
+			&i.EventResult.AverageLapTime,
+			&i.EventResult.Position,
+			&i.EventResult.NumberOfLaps,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getLocationByName = `-- name: GetLocationByName :one
 SELECT id, name FROM location WHERE name = ?
 `

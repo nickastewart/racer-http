@@ -28,6 +28,7 @@ func main() {
 
 	authController := controllers.NewAuthController(userRepository)
 	fileUploadController := controllers.NewFileUploadController(userRepository, eventRepository, locationRepository, eventResultRepository)
+	eventController := controllers.NewEventsController(userRepository, eventRepository, locationRepository, eventResultRepository)
 
 	if err != nil {
 		log.Panic(err)
@@ -44,6 +45,7 @@ func main() {
 	// TODO: Add file upload endpoint
 	router.POST("upload", authController.CheckAuth, fileUploadController.UploadFile)
 	// TODO: Add get events endpoint, need to check auth
+	router.GET("events", authController.CheckAuth, eventController.GetEventsByUser)
 	// TODO: Add add friend endpoint, need to check auth
 	// TODO: Add get events endpoint that includes friends, need to check auth
 	// TODO: Add endpoint to remove friends
