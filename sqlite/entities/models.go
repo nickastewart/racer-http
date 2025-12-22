@@ -26,6 +26,17 @@ type EventResult struct {
 	NumberOfLaps   int64
 }
 
+type Friend struct {
+	ID           int64
+	UserID       int64
+	FriendID     int64
+	FriendStatus string
+	AcceptedDate sql.NullString
+	CreatedAt    string
+	UpdatedAt    sql.NullString
+	RowVersion   int64
+}
+
 type Location struct {
 	ID   int64
 	Name string

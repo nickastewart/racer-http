@@ -10,6 +10,32 @@ import (
 	"database/sql"
 )
 
+const addFriend = `-- name: AddFriend :one
+INSERT INTO friend (user_id, friend_id, friend_status) VALUES (?, ?, ?) RETURNING id, user_id, friend_id, friend_status, accepted_date, created_at, updated_at, row_version
+`
+
+type AddFriendParams struct {
+	UserID       int64
+	FriendID     int64
+	FriendStatus string
+}
+
+func (q *Queries) AddFriend(ctx context.Context, arg AddFriendParams) (Friend, error) {
+	row := q.db.QueryRowContext(ctx, addFriend, arg.UserID, arg.FriendID, arg.FriendStatus)
+	var i Friend
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.FriendID,
+		&i.FriendStatus,
+		&i.AcceptedDate,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.RowVersion,
+	)
+	return i, err
+}
+
 const createEvent = `-- name: CreateEvent :one
 INSERT INTO event (location_id, type, date, total_drivers) VALUES (?, ?, ?, ?)
     RETURNING id, location_id, type, date, total_drivers

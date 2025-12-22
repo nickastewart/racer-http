@@ -27,3 +27,7 @@ type EventResultRepository interface {
 	CreateEventResult(ctx context.Context, arg entities.CreateEventResultParams) (entities.EventResult, error)
 	GetEventResultByEventIdAndUserId(ctx context.Context, arg entities.GetEventResultByEventIdAndUserIdParams) (entities.EventResult, error)
 }
+
+type FriendRepository interface {
+	AddFriend(ctx context.Context, arg entities.AddFriendParams) (entities.Friend, error)
+}

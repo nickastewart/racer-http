@@ -7,6 +7,7 @@ import (
 	"racer_http/models"
 	"racer_http/repository"
 	"racer_http/sqlite/entities"
+	"racer_http/templates"
 	"strings"
 	"time"
 
@@ -19,7 +20,12 @@ type AuthController struct {
 	UserRepository repository.UserRepository
 }
 
-// TODO: Change to inject a service instead of a repo 
+type LoginForm struct {
+	Email    string `form:"email"`
+	Password string `form:"password"`
+}
+
+// TODO: Change to inject a service instead of a repo
 func NewAuthController(userRepository repository.UserRepository) *AuthController {
 	return &AuthController{
 		UserRepository: userRepository,
@@ -58,7 +64,7 @@ func (controller *AuthController) CreateUser(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to process request"})
-		return 
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": user})
@@ -97,6 +103,116 @@ func (controller *AuthController) Login(c *gin.Context) {
 	}
 
 	c.JSON(200, gin.H{"token": token})
+}
+
+func (controller *AuthController) LoginForm(c *gin.Context) {
+	ctx := context.Background()
+	var loginForm LoginForm
+
+	c.Bind(&loginForm)
+
+	userFound, _ := controller.UserRepository.GetUserByEmailForLogin(ctx, loginForm.Email)
+
+	if userFound.ID == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "user not found"})
+		return
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(userFound.Password), []byte(loginForm.Password)); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	generateToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"id":  userFound.ID,
+		"exp": time.Now().Add(time.Hour * 24).Unix(),
+	})
+
+	// TODO: Use a real secret from env variables for signing jwt
+	token, err := generateToken.SignedString([]byte("SECRET"))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "failed to generate token"})
+	}
+
+	cookieName := "access_token"
+	cookieMaxAge := 15 * 60
+	secure := false
+	sameSite := http.SameSiteLaxMode
+
+	c.SetCookie(cookieName,
+		token,
+		cookieMaxAge,
+		"/",
+		"",
+		secure,
+		true)
+
+	cookie := &http.Cookie{
+		Name:     cookieName,
+		Value:    token,
+		Path:     "/",
+		Expires:  time.Now().Add(15 * time.Minute),
+		MaxAge:   cookieMaxAge,
+		HttpOnly: true,
+		Secure:   secure,
+		SameSite: sameSite,
+	}
+	http.SetCookie(c.Writer, cookie)
+
+	c.HTML(http.StatusOK, "Home Page", templates.Home())
+}
+
+func (controller *AuthController) CheckAccessToken(c *gin.Context) {
+	ctx := context.Background()
+
+	authToken, err := c.Cookie("access_token")
+
+	if err != nil {
+		c.Redirect(http.StatusSeeOther, "/login")
+		return
+	}
+
+	tokenString := authToken
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+		// TODO: Use a real secret from env variables for signing jwt
+		return []byte("SECRET"), nil
+	})
+
+	if err != nil || !token.Valid {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+		c.Abort()
+		return
+	}
+
+	if float64(time.Now().Unix()) > claims["exp"].(float64) {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "token expired"})
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	user, _ := controller.UserRepository.GetUserById(ctx, int64(claims["id"].(float64)))
+	if user.ID == 0 {
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	c.Set(
+		"currentUser",
+		user,
+	)
+
+	c.Next()
 }
 
 func (controller *AuthController) CheckAuth(c *gin.Context) {
@@ -159,7 +275,7 @@ func (controller *AuthController) CheckAuth(c *gin.Context) {
 	c.Next()
 }
 
-// TODO: delete func when profile functionality is added as this is a test func 
+// TODO: delete func when profile functionality is added as this is a test func
 func (controller *AuthController) GetUser(c *gin.Context) {
 	user, _ := c.Get("currentUser")
 	c.JSON(200, gin.H{"user": user})
