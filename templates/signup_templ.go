@@ -29,7 +29,11 @@ func Signup() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<form action=\"/signup\" method=\"POST\"><input type=\"email\" name=\"email\" placeholder=\"Email\"> <input type=\"email\" name=\"email-confirm\" placeholder=\"Confirm Email\"> <input type=\"text\" name=\"first-name\" placeholder=\"First Name\"> <input type=\"text\" name=\"last-name\" placeholder=\"Last Name\"> <input type=\"password\" name=\"password\" placeholder=\"Password\"> <input type=\"password\" name=\"password-confirm\" placeholder=\"Confirm Password\"> <input type=\"submit\" value=\"Submit\"></form>")
+		templ_7745c5c3_Err = Head().Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<html><div id=\"signup-page\"><div id=\"signup-page-left\" class=\"signup-split\"><hr></div><div id=\"signup-page-right\" class=\"signup-split\"><form id=\"signup-form\" name=\"signup\" action=\"/signup\" method=\"POST\"><div style=\"float:left;\"><label for=\"first-name\">First Name</label> <input type=\"text\" name=\"first-name\" placeholder=\"First Name\"></div><div style=\"float:left;\"><label for=\"last-name\">Last Name</label> <input type=\"text\" name=\"last-name\" placeholder=\"Last Name\"></div><br style=\"clear:both;\"><div><label for=\"email\">Email</label> <input type=\"email\" name=\"email\" placeholder=\"Email\"></div><div><label for=\"email-confirm\">Confirm Email</label> <input type=\"email\" name=\"email-confirm\" placeholder=\"Confirm Email\"></div><div><label for=\"password\">Password</label> <input type=\"password\" name=\"password\" placeholder=\"Password\"></div><div><label for=\"password-confirm\">Confirm Password</label> <input type=\"password\" name=\"password-confirm\" placeholder=\"Confirm Password\"></div><div><input type=\"submit\" value=\"Submit\"></div></form></div></div></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
