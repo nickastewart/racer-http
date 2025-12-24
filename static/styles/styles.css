@@ -60,7 +60,65 @@ html {
     width:200px;
 }
 
-#submit-button {
+#login-page {
+    width:100%;
+}
+
+.login-split {
+    height: 100%;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    overflow-x: hidden;
+    padding-top: 20px;
+}
+
+#login-page-left {
+  left: 0;
+  width: 35%;
+  background-color: #111;
+}
+
+#login-page-right {
+  right: 0;
+  width:65%;
+}
+
+#login-form-section {
+    width: 80%;
+    margin: 0 auto;
+    margin-left: 25%;
+    margin-top: 20%;
+}
+
+#login-form input, label {
+    display: block;
+    margin-right:20px;
+}
+
+#login-form input {
+    height:50px;
+    border-radius: 10px; 
+    box-shadow:none;
+    font-size: 1.25em;
+}
+
+#login-form label {
+    margin-top:20px;
+    margin-bottom:5px;
+}
+
+.input-full-width {
+    border: 1px solid #CCCCCC;
+    width:425px;
+}
+
+.input-half-width {
+    border: 1px solid #CCCCCC;
+    width:200px;
+}
+
+.submit-button {
     margin-top:20px;
     background-color: black;
     color:white;

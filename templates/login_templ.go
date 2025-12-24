@@ -29,7 +29,15 @@ func Login() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<form action=\"login\" method=\"POST\"><input type=\"email\" name=\"email\" placeholder=\"Email\"> <input type=\"password\" name=\"password\" placeholder=\"Password\"> <input type=\"submit\" value=\"Submit\"></form>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = Head().Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<html><div id=\"login-page\"><div id=\"login-page-left\" class=\"login-split\"></div><div id=\"login-page-right\" class=\"login-split\"><div id=\"login-form-section\"><form id=\"login-form\" action=\"login\" method=\"POST\"><div><label for=\"email\">Email</label> <input class=\"input-full-width\" type=\"email\" name=\"email\"></div><div><label for=\"password\">Password</label> <input class=\"input-full-width\" type=\"password\" name=\"password\"></div><div><input class=\"input-full-width submit-button\" type=\"submit\" value=\"Login\"></div></form></div></div></div></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
