@@ -17,7 +17,7 @@ func main() {
 	// TODO: Add testing to parser
 	// TODO: Start using Templ
 
-	db, err := sql.Open("sqlite", "/Users/nickstewart/sqlite/racer.db")
+	db, err := sql.Open("sqlite", "./sqlite/racer.db")
 	if err != nil {
 		log.Panic(err)
 	}
@@ -38,6 +38,7 @@ func main() {
 	}
 
 	router := gin.Default()
+	router.Static("/styles", "./static/styles")
 
 	router.POST("/signup", authController.Signup)
 	router.POST("/login", authController.LoginForm)
