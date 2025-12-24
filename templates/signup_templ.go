@@ -29,11 +29,15 @@ func Signup() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
 		templ_7745c5c3_Err = Head().Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<html><div id=\"signup-page\"><div id=\"signup-page-left\" class=\"signup-split\"><hr></div><div id=\"signup-page-right\" class=\"signup-split\"><form id=\"signup-form\" name=\"signup\" action=\"/signup\" method=\"POST\"><div style=\"float:left;\"><label for=\"first-name\">First Name</label> <input type=\"text\" name=\"first-name\" placeholder=\"First Name\"></div><div style=\"float:left;\"><label for=\"last-name\">Last Name</label> <input type=\"text\" name=\"last-name\" placeholder=\"Last Name\"></div><br style=\"clear:both;\"><div><label for=\"email\">Email</label> <input type=\"email\" name=\"email\" placeholder=\"Email\"></div><div><label for=\"email-confirm\">Confirm Email</label> <input type=\"email\" name=\"email-confirm\" placeholder=\"Confirm Email\"></div><div><label for=\"password\">Password</label> <input type=\"password\" name=\"password\" placeholder=\"Password\"></div><div><label for=\"password-confirm\">Confirm Password</label> <input type=\"password\" name=\"password-confirm\" placeholder=\"Confirm Password\"></div><div><input type=\"submit\" value=\"Submit\"></div></form></div></div></html>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<html><div id=\"signup-page\"><div id=\"signup-page-left\" class=\"signup-split\"></div><div id=\"signup-page-right\" class=\"signup-split\"><div id=\"signup-form-section\"><form id=\"signup-form\" name=\"signup\" action=\"/signup\" method=\"POST\"><div><div style=\"float:left;\"><label for=\"first-name\">First Name</label> <input class=\"input-half-width\" type=\"text\" name=\"first-name\"></div><div style=\"float:left;\"><label for=\"last-name\">Last Name</label> <input class=\"input-half-width\" type=\"text\" name=\"last-name\"></div></div><br style=\"clear:both;\"><div><label for=\"email\">Email</label> <input class=\"input-full-width\" type=\"email\" name=\"email\"></div><div><label for=\"email-confirm\">Confirm Email</label> <input class=\"input-full-width\" type=\"email\" name=\"email-confirm\"></div><div><label for=\"password\">Password</label> <input class=\"input-full-width\" type=\"password\" name=\"password\"></div><div><label for=\"password-confirm\">Confirm Password</label> <input class=\"input-full-width\" type=\"password\" name=\"password-confirm\"></div><div><input id=\"submit-button\" class=\"input-full-width\" type=\"submit\" value=\"Sign up\"></div></form></div></div></div></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

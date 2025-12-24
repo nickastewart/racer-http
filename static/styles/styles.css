@@ -1,10 +1,13 @@
+html {
+    font-family: Arial, sans-serif;
+}
+
 #signup-page {
     width:100%;
 }
 
 .signup-split {
     height: 100%;
-    width: 50%;
     position: fixed;
     z-index: 1;
     top: 0;
@@ -14,14 +17,54 @@
 
 #signup-page-left {
   left: 0;
+  width: 35%;
   background-color: #111;
 }
 
 #signup-page-right {
   right: 0;
-  background-color: red;
+  width:65%;
+}
+
+#signup-form-section {
+    width: 80%;
+    margin: 0 auto;
+    margin-left: 25%;
+    margin-top: 20%;
 }
 
 #signup-form input, label {
     display: block;
+    margin-right:20px;
+}
+
+#signup-form input {
+    height:50px;
+    border-radius: 10px; 
+    box-shadow:none;
+    font-size: 1.25em;
+}
+
+#signup-form label {
+    margin-top:20px;
+    margin-bottom:5px;
+}
+
+.input-full-width {
+    border: 1px solid #CCCCCC;
+    width:425px;
+}
+
+.input-half-width {
+    border: 1px solid #CCCCCC;
+    width:200px;
+}
+
+#submit-button {
+    margin-top:20px;
+    background-color: black;
+    color:white;
+    border:none;
+    box-shadow: none;
+    border-radius: 200px;
 }
