@@ -63,14 +63,14 @@ func (controller *AuthController) Signup(c *gin.Context) {
 		Password:  string(passwordHash),
 	}
 
-	user, err := controller.UserRepository.CreateUser(ctx, createUserParams)
+	_, err = controller.UserRepository.CreateUser(ctx, createUserParams)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to process request"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": user})
+	c.HTML(http.StatusOK, "", templates.Login())
 }
 
 func (controller *AuthController) LoginForm(c *gin.Context) {
